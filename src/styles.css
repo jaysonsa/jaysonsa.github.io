@@ -394,6 +394,33 @@ body.is-list #labels {
 }
 
 /* Demos */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.filters span {
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.filters .export {
+  margin-left: auto;
+  background: var(--accent);
+  border-color: transparent;
+  color: #fff;
+}
+
+.feature {
+  padding-top: 14px;
+  border-top: 1px dashed var(--border);
+}
+
 .demo {
   border: 1px solid var(--border);
   background: var(--surface-2);
@@ -640,6 +667,14 @@ body.is-list #labels {
 @media (max-width: 640px) {
   .brand-extra {
     display: none;
+  }
+
+  .brand {
+    flex: 0 1 auto;
+  }
+
+  .brand > span {
+    min-width: 0;
   }
 
   .top-actions .btn {

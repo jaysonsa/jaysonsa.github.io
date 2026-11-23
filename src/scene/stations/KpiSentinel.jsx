@@ -65,7 +65,7 @@ export default function KpiSentinel() {
   });
 
   return (
-    <Station id="kpi-sentinel" labelY={4.6}>
+    <Station id="anomaly-alerts" labelY={4.6}>
       {/* Big wall screen (wall face at local z = -2.5) */}
       <mesh position={[0, 3.1, -2.47]}>
         <boxGeometry args={[4.3, 2.2, 0.06]} />

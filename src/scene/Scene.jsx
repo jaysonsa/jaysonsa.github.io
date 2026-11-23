@@ -6,6 +6,7 @@ import AboutDesk from './stations/AboutDesk.jsx';
 import AssetHub from './stations/AssetHub.jsx';
 import KpiSentinel from './stations/KpiSentinel.jsx';
 import PromoRadar from './stations/PromoRadar.jsx';
+import CustomerInsights from './stations/CustomerInsights.jsx';
 import FarmLedger from './stations/FarmLedger.jsx';
 import Whiteboard from './stations/Whiteboard.jsx';
 import Door from './stations/Door.jsx';
@@ -40,6 +41,7 @@ export default function Scene({ paused }) {
       <AssetHub />
       <KpiSentinel />
       <PromoRadar />
+      <CustomerInsights />
       <FarmLedger />
       <Whiteboard />
       <Door />

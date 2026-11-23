@@ -245,8 +245,8 @@ export function whiteboardTexture(groups) {
       ctx.fillStyle = '#111827';
       ctx.font = `800 28px ${FONT}`;
       ctx.fillText(g.name, x + 16, y + 40);
-      ctx.font = `500 25px ${FONT}`;
-      g.items.forEach((item, j) => ctx.fillText(`• ${item}`, x + 16, y + 100 + j * 62));
+      ctx.font = `500 21px ${FONT}`;
+      g.items.forEach((item, j) => ctx.fillText(`• ${item}`, x + 14, y + 96 + j * 58));
       ctx.restore();
     });
   });
@@ -295,10 +295,10 @@ export function notifTexture() {
     ctx.fillStyle = '#0f172a';
     ctx.textBaseline = 'middle';
     ctx.font = `800 40px ${FONT}`;
-    ctx.fillText('KPI alert', 48, 62);
+    ctx.fillText('Anomaly alert', 48, 62);
     ctx.fillStyle = '#475569';
     ctx.font = `500 30px ${FONT}`;
-    ctx.fillText('Transactions ▼ 38% (mock)', 48, 132);
+    ctx.fillText('3 new rows matched (mock)', 48, 132);
   });
 }
 
@@ -374,11 +374,73 @@ export function drawChart(ctx, w, h, data, threshold, alarm) {
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#cbd5e1';
   ctx.font = `700 18px ${FONT}`;
-  ctx.fillText('TRANSACTIONS / HOUR (MOCK)', 18, 20);
+  ctx.fillText('RULE MATCHES / HOUR (MOCK)', 18, 20);
   const label = alarm ? 'ALERT SENT' : 'NORMAL';
   ctx.font = `800 16px ${FONT}`;
   const tw = ctx.measureText(label).width + 28;
   pill(ctx, w - tw - 16, 6, tw, 28, alarm ? '#ef4444' : '#16a34a');
   ctx.fillStyle = '#fff';
   ctx.fillText(label, w - tw - 2, 21);
+}
+
+export function directoryTexture() {
+  const rows = [
+    ['acct_10482', 'Gold', '48,200'],
+    ['acct_20931', 'Silver', '12,950'],
+    ['acct_33017', 'Gold', '31,400'],
+    ['acct_41266', 'Bronze', '4,180'],
+    ['acct_52390', 'Silver', '9,720'],
+  ];
+  return makeCanvasTexture(512, 320, (ctx, w) => {
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, w, 320);
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = `700 22px ${FONT}`;
+    ctx.fillText('Directory (mock)', 22, 28);
+    ['1.2M', '84%', '+3.1%'].forEach((v, i) => {
+      const x = 22 + i * 160;
+      ctx.fillStyle = '#16213b';
+      ctx.beginPath();
+      ctx.roundRect(x, 50, 148, 52, 8);
+      ctx.fill();
+      ctx.fillStyle = '#7dd3fc';
+      ctx.font = `800 24px ${FONT}`;
+      ctx.fillText(v, x + 14, 77);
+    });
+    rows.forEach(([a, t, v], i) => {
+      const y = 132 + i * 38;
+      ctx.fillStyle = i % 2 ? '#111c33' : '#16213b';
+      ctx.fillRect(16, y - 17, w - 32, 34);
+      ctx.fillStyle = '#cbd5e1';
+      ctx.font = `500 18px ${FONT}`;
+      ctx.fillText(a, 28, y);
+      ctx.fillText(t, 220, y);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#fdba74';
+      ctx.fillText(v, w - 28, y);
+      ctx.textAlign = 'left';
+    });
+  });
+}
+
+export function sheetTexture() {
+  return makeCanvasTexture(128, 160, (ctx, w, h) => {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = '#16a34a';
+    ctx.fillRect(0, 0, w, 30);
+    ctx.strokeStyle = '#bbf7d0';
+    ctx.lineWidth = 2;
+    for (let y = 46; y < h; y += 18) {
+      ctx.beginPath();
+      ctx.moveTo(8, y);
+      ctx.lineTo(w - 8, y);
+      ctx.stroke();
+    }
+    ctx.beginPath();
+    ctx.moveTo(48, 36);
+    ctx.lineTo(48, h - 8);
+    ctx.stroke();
+  });
 }

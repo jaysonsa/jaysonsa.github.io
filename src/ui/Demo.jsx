@@ -16,7 +16,10 @@ function UploadDemo() {
           </div>
         ))}
       </div>
-      <p className="demo-caption">One upload, served to every site that uses it.</p>
+      <pre className="code">
+        {'<script src="…/asset-loader.js"\n  data-tag="homepage-hero"></script>\n<script>\n  function onImagesLoaded(images) { /* render */ }\n</script>'}
+      </pre>
+      <p className="demo-caption">One upload, served to every site that uses the tag. Snippet is illustrative.</p>
     </div>
   );
 }
@@ -25,38 +28,84 @@ function TelegramDemo() {
   return (
     <div className="demo demo-telegram">
       <div className="tg-head">
-        <span className="tg-avatar" aria-hidden="true">KS</span>
+        <span className="tg-avatar" aria-hidden="true">AA</span>
         <div>
-          <strong>KPI Sentinel</strong>
+          <strong>Anomaly Alerts</strong>
           <small>bot</small>
         </div>
       </div>
       <div className="tg-msg">
         <p>
-          <strong>⚠️ KPI alert</strong>
+          <strong>⚠️ Rule: Unusual refund spike</strong>
         </p>
-        <p>Transactions (last hour): 412</p>
-        <p>▼ 38% vs. 7-day average</p>
-        <p>Threshold: −25%</p>
+        <p>3 new rows matched (refunds_1h &gt; 50)</p>
+        <p>• acct_10482 · 74</p>
+        <p>• acct_20931 · 61</p>
+        <p>• acct_33017 · 58</p>
         <time>09:42</time>
       </div>
-      <p className="demo-caption">Sample message with mock numbers.</p>
+      <p className="demo-caption">Sample message with mock data. Rows already alerted inside the cooldown are skipped.</p>
     </div>
   );
 }
 
 function WebhookDemo() {
   const payload = {
-    event: 'promotion.terms_updated',
-    promotion_id: 'PROMO-1024',
-    changed: ['max_reward', 'valid_until'],
-    updated_at: '2026-01-15T09:30:00Z',
+    event_id: 'evt_01J9X4',
+    sequence: 1842,
+    type: 'promotion.changed',
+    occurred_at: '2026-01-15T09:30:00Z',
+    changes: [{ field: 'end_date', before: '2026-01-31', after: '2026-02-15' }],
+    promotion: { id: 1024, title: 'Weekend Reward', brand: 'brand-a' },
   };
   return (
     <div className="demo">
-      <p className="demo-label">POST /webhooks/support (mock)</p>
-      <pre className="code">{JSON.stringify(payload, null, 2)}</pre>
-      <p className="demo-caption">When promo terms change, support gets a payload like this.</p>
+      <p className="demo-label">POST {'{client webhook URL}'} (mock)</p>
+      <pre className="code">
+        {'X-Timestamp: 1736933400\nX-Signature: sha256=9f2c…e81a\n\n'}
+        {JSON.stringify(payload, null, 2)}
+      </pre>
+      <p className="demo-caption">
+        Signed with HMAC-SHA256 over timestamp + body. Failed deliveries retry at 1m, 5m, 30m, 2h and 12h.
+      </p>
+    </div>
+  );
+}
+
+function DirectoryDemo() {
+  const rows = [
+    ['acct_10482', 'Gold', '2 days ago', '48,200'],
+    ['acct_20931', 'Silver', '9 days ago', '12,950'],
+    ['acct_33017', 'Gold', 'Today', '31,400'],
+  ];
+  return (
+    <div className="demo">
+      <div className="filters" aria-hidden="true">
+        <span>Segment: Gold</span>
+        <span>Active: 30 days</span>
+        <span className="export">Export CSV</span>
+      </div>
+      <table className="ledger">
+        <thead>
+          <tr>
+            <th>Account</th>
+            <th>Tier</th>
+            <th>Last active</th>
+            <th className="num">Lifetime</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map(([a, t, l, v]) => (
+            <tr key={a}>
+              <td>{a}</td>
+              <td>{t}</td>
+              <td>{l}</td>
+              <td className="num">{v}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="demo-caption">Mock rows. Exports run in the background and arrive as a zipped, multi-part CSV.</p>
     </div>
   );
 }
@@ -92,7 +141,13 @@ function LedgerDemo() {
   );
 }
 
-const DEMOS = { upload: UploadDemo, telegram: TelegramDemo, webhook: WebhookDemo, ledger: LedgerDemo };
+const DEMOS = {
+  upload: UploadDemo,
+  telegram: TelegramDemo,
+  webhook: WebhookDemo,
+  directory: DirectoryDemo,
+  ledger: LedgerDemo,
+};
 
 export default function Demo({ type }) {
   const Component = DEMOS[type];

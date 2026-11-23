@@ -14,6 +14,26 @@ function ProjectBody({ e }) {
         <h3>Solution</h3>
         <p>{e.solution}</p>
       </section>
+      {e.highlights && (
+        <section>
+          <h3>Engineering highlights</h3>
+          <ul className="ticks">
+            {e.highlights.map((h) => (
+              <li key={h}>{h}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {e.features?.map((f) => (
+        <section key={f.title} className="feature">
+          <h3>{f.title}</h3>
+          <ul className="ticks">
+            {f.points.map((p) => (
+              <li key={p}>{p}</li>
+            ))}
+          </ul>
+        </section>
+      ))}
       <section>
         <h3>Impact</h3>
         <ul className="ticks">

@@ -2,7 +2,7 @@
 
 Personal portfolio of a web developer, presented as an interactive 3D virtual office: https://jaysonsa.github.io/
 
-Each station in the office is a project. Clicking a station flies the camera over and opens a short case study (problem, solution, impact, tech, and a mock demo). A plain list view is available for quick skimming and for devices without WebGL. A station can also be linked directly, for example `https://jaysonsa.github.io/#kpi-sentinel`.
+Each station in the office is a project. Clicking a station flies the camera over and opens a short case study (problem, solution, impact, tech, and a mock demo). A plain list view is available for quick skimming and for devices without WebGL. A station can also be linked directly, for example `https://jaysonsa.github.io/#anomaly-alerts`.
 
 ## Confidentiality
 

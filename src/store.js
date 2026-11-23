@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react';
 import { entries } from './content.js';
 
 // Tiny shared store. It works inside and outside the R3F canvas without context bridging.
-// A station can be opened directly with a link such as /#kpi-sentinel.
+// A station can be opened directly with a link such as /#anomaly-alerts.
 const initial = typeof window !== 'undefined' ? decodeURIComponent(window.location.hash.slice(1)) : '';
 let state = { selected: entries[initial] ? initial : null, listView: false };
 const listeners = new Set();
