@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useMemo } from 'react';
 import { getState, select, setState, useStore } from './store.js';
 import { entries, ORDER, profile } from './content.js';
 import Panel from './ui/Panel.jsx';
+import ControlBar from './ui/ControlBar.jsx';
 import ListView from './ui/ListView.jsx';
 
 const Scene = lazy(() => import('./scene/Scene.jsx'));
@@ -19,11 +20,15 @@ export default function App() {
   const webgl = useMemo(hasWebGL, []);
   const listView = useStore((s) => s.listView) || !webgl;
   const selected = useStore((s) => s.selected);
+  const controlled = useStore((s) => s.controlled);
 
   useEffect(() => {
     const onKey = (e) => {
       const { selected: current } = getState();
-      if (e.key === 'Escape') select(null);
+      if (e.key === 'Escape') {
+        if (getState().controlled) setState({ controlled: null });
+        else select(null);
+      }
       if (!current || e.target.closest?.('input, textarea')) return;
       const i = ORDER.indexOf(current);
       if (e.key === 'ArrowRight') select(ORDER[(i + 1) % ORDER.length]);
@@ -36,6 +41,10 @@ export default function App() {
   useEffect(() => {
     document.body.classList.toggle('is-list', listView);
   }, [listView]);
+
+  useEffect(() => {
+    document.body.classList.toggle('is-controlling', Boolean(controlled));
+  }, [controlled]);
 
   useEffect(() => {
     document.title = selected ? `${entries[selected].title} · Virtual Office` : 'Virtual Office · jaysonsa';
@@ -73,10 +82,12 @@ export default function App() {
         </nav>
       </header>
 
-      {!listView && !selected && (
+      {!listView && controlled && <ControlBar />}
+
+      {!listView && !selected && !controlled && (
         <p className="hint">
-          <span className="hint-desktop">Drag to look around · scroll to zoom · click a station</span>
-          <span className="hint-touch">Drag to look around · pinch to zoom · tap a station</span>
+          <span className="hint-desktop">Click a station to open it · click a person to steer them · drag to look around</span>
+          <span className="hint-touch">Tap a station to open it · tap a person to steer them</span>
         </p>
       )}
 

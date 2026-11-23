@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { select, useStore } from '../store.js';
+import { select, setState, useStore } from '../store.js';
+import { TEAM_BY_STATION } from '../team.js';
 import { entries, ORDER, profile } from '../content.js';
 import Demo from './Demo.jsx';
 
@@ -155,6 +156,13 @@ export default function Panel() {
             <p className="teammate">
               <span aria-hidden="true" />
               Virtual teammate: <strong>{e.teammate}</strong>
+              <button
+                type="button"
+                className="link control-link"
+                onClick={() => setState({ controlled: TEAM_BY_STATION[selected].id, selected: null })}
+              >
+                Walk around with {e.teammate} →
+              </button>
             </p>
           )}
         </div>

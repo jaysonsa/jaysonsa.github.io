@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import Station from '../Station.jsx';
-import Person from '../Person.jsx';
 import { Chair, Desk, Laptop, Mug, Plant } from '../parts.jsx';
 import { ledgerTexture } from '../textures.js';
 
@@ -20,16 +19,6 @@ export default function FarmLedger() {
         </mesh>
       </Desk>
       <Chair position={[0.9, 0, 0]} rotation={[0, Math.PI / 2, 0]} color="#9b6bdf" />
-      <Person
-        name="BeeOne"
-        station="farm-ledger"
-        accent="#9b6bdf"
-        pose="sit"
-        position={[0.97, 0, 0]}
-        rotation={-Math.PI / 2}
-        phase={3}
-        look={{ skin: '#d9a066', hair: 'short', hairColor: '#3b2416', shirt: '#9b6bdf', pants: '#44403c', shoes: '#a16207', accessory: 'hat' }}
-      />
       <Plant position={[0, 0, -1.3]} scale={0.7} />
     </Station>
   );

@@ -2,6 +2,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import Room from './Room.jsx';
 import Interior from './Interior.jsx';
+import Team from './Team.jsx';
 import Outdoor from './Outdoor.jsx';
 import CameraRig from './CameraRig.jsx';
 import AboutDesk from './stations/AboutDesk.jsx';
@@ -43,6 +44,7 @@ export default function Scene({ paused }) {
 
       <Outdoor />
       <Interior />
+      <Team />
 
       <Room />
       <AssetHub />

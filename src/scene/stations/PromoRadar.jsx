@@ -154,16 +154,6 @@ export default function PromoRadar() {
         <Monitor texture={support} w={1.0} h={0.62} position={[0, 0, -0.1]} />
       </Desk>
       <pointLight ref={csGlow} position={[3, 2, 5.4]} distance={4} color="#f97316" intensity={0.4} />
-      <Person
-        name="Lexi"
-        station="promo-radar"
-        accent="#f6c445"
-        pose="point"
-        position={[1.5, 0, 0.6]}
-        rotation={-2.2}
-        phase={2.1}
-        look={{ skin: '#f1c27d', hair: 'long', hairColor: '#2b1a10', shirt: '#f6c445', pants: '#1f2937', shoes: '#111827' }}
-      />
       <Chair position={[3, 0, 5.85]} color="#ec6fa8" />
       <Person
         pose="sit"

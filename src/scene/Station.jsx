@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Html } from '@react-three/drei';
-import { select, useStore } from '../store.js';
+import { getState, select, setState, useStore } from '../store.js';
+import { commandWalk } from '../team.js';
 import { entries } from '../content.js';
 import { STATIONS } from '../stations.js';
 import { labelLayer } from './labelLayer.js';
@@ -11,8 +12,9 @@ export const ACCENT = '#f97316';
 // Clickable wrapper: hover ring, floating label, and opening the case-study panel.
 export default function Station({ id, rotation, labelY = 3.4, ring = { position: [0, 0, 0], radius: 2.2 }, children }) {
   const selected = useStore((s) => s.selected);
+  const controlling = useStore((s) => Boolean(s.controlled));
   const [hover, setHover] = useState(false);
-  const active = hover || selected === id;
+  const active = (hover && !controlling) || selected === id;
 
   return (
     <group
@@ -30,7 +32,9 @@ export default function Station({ id, rotation, labelY = 3.4, ring = { position:
       onClick={(e) => {
         e.stopPropagation();
         if (e.delta > 6) return; // ignore clicks that were really a drag
-        select(id);
+        // While steering a teammate, clicks mean "walk here".
+        if (getState().controlled) commandWalk(e.point);
+        else select(id);
       }}
     >
       {children}
@@ -41,8 +45,11 @@ export default function Station({ id, rotation, labelY = 3.4, ring = { position:
       <Html position={[ring.position[0], labelY, ring.position[2]]} center zIndexRange={[20, 0]} portal={labelLayer}>
         <button
           type="button"
-          className={`station-label${active ? ' is-active' : ''}`}
-          onClick={() => select(id)}
+          className={`station-label${active ? ' is-active' : ''}${selected === id ? ' is-current' : ''}`}
+          onClick={() => {
+            setState({ controlled: null });
+            select(id);
+          }}
           onPointerEnter={() => setHover(true)}
           onPointerLeave={() => setHover(false)}
         >

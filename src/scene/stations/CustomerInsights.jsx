@@ -2,7 +2,6 @@ import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import Station from '../Station.jsx';
-import Person from '../Person.jsx';
 import { Desk, Monitor } from '../parts.jsx';
 import { directoryTexture, sheetTexture } from '../textures.js';
 
@@ -112,16 +111,6 @@ export default function CustomerInsights() {
         <meshBasicMaterial map={sheet} side={THREE.DoubleSide} toneMapped={false} />
       </mesh>
 
-      <Person
-        name="Baet"
-        station="customer-insights"
-        accent="#4cb071"
-        pose="gesture"
-        position={[-1.5, 0, 0.8]}
-        rotation={1.1}
-        phase={2.6}
-        look={{ skin: '#8d5524', hair: 'curly', hairColor: '#1a1a1a', shirt: '#4cb071', pants: '#3f3f46', accessory: 'glasses' }}
-      />
     </Station>
   );
 }

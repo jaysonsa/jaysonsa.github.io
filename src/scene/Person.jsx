@@ -1,11 +1,15 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
-import { REDUCED_MOTION, select } from '../store.js';
+import { REDUCED_MOTION } from '../store.js';
 import { labelLayer } from './labelLayer.js';
 
 // Stylised low-poly person built from primitives. Faces +z by default.
-// Poses: 'stand', 'sit' (typing at a desk), 'point' (presenting), 'gesture' (explaining).
+// Poses: 'stand', 'walk', 'sit' (typing at a desk), 'point' (presenting), 'gesture' (explaining).
+
+const TAG_DISTANCE = 22; // name tags hide when the camera is farther than this
+const tmp = new THREE.Vector3();
 
 const HEAD_R = 0.17;
 
@@ -164,13 +168,14 @@ function Accessory({ type }) {
 
 export default function Person({
   name,
-  station,
   accent = '#f97316',
   pose = 'stand',
   look = {},
   position,
   rotation = 0,
   phase = 0,
+  controlled = false,
+  onTagClick,
 }) {
   const {
     skin = '#e0ac69',
@@ -194,10 +199,39 @@ export default function Person({
   const elbowL = useRef();
   const elbowR = useRef();
   const body = useRef();
+  const root = useRef();
+  const tag = useRef();
+  const thighs = useRef([]);
+  const knees = useRef([]);
+  const [hover, setHover] = useState(false);
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock, camera }) => {
+    // Show the name tag only when close enough to read it, or when hovered / being steered.
+    if (tag.current && root.current) {
+      root.current.getWorldPosition(tmp);
+      const near = camera.position.distanceTo(tmp) < TAG_DISTANCE;
+      tag.current.classList.toggle('is-hidden', !(near || hover || controlled));
+    }
     if (REDUCED_MOTION) return;
     const t = clock.elapsedTime + phase;
+    if (pose === 'walk') {
+      const s = Math.sin(t * 9);
+      thighs.current.forEach((g, i) => g && (g.rotation.x = (i ? s : -s) * 0.55));
+      knees.current.forEach((g, i) => g && (g.rotation.x = Math.max(0, i ? -s : s) * 0.7));
+      if (armL.current) armL.current.rotation.x = s * 0.5;
+      if (armR.current) armR.current.rotation.x = -s * 0.5;
+      if (body.current) body.current.position.y = Math.abs(Math.cos(t * 9)) * 0.04;
+      if (head.current) head.current.rotation.set(0, 0, 0);
+      return;
+    }
+    thighs.current.forEach((g) => g && (g.rotation.x = sitting ? -Math.PI / 2 : 0));
+    knees.current.forEach((g) => g && (g.rotation.x = sitting ? Math.PI / 2 : 0));
+    if (body.current) body.current.position.y = 0;
+    // Reset joints to the pose's rest angles (they may have been moved by walking).
+    if (armL.current) armL.current.rotation.x = arm.sx;
+    if (armR.current) armR.current.rotation.x = right.sx;
+    if (elbowL.current) elbowL.current.rotation.x = arm.ex;
+    if (elbowR.current) elbowR.current.rotation.x = right.ex;
     if (torso.current) torso.current.scale.y = 1 + Math.sin(t * 2) * 0.012;
     if (head.current) {
       head.current.rotation.y = Math.sin(t * 0.45) * (sitting ? 0.15 : 0.35);
@@ -226,13 +260,22 @@ export default function Person({
     point: { sx: 0, sz: 0.08, ex: -0.1 },
     gesture: { sx: -0.2, sz: 0.15, ex: -1.0 },
     stand: { sx: 0, sz: 0.08, ex: -0.15 },
+    walk: { sx: 0, sz: 0.08, ex: -0.3 },
   }[pose];
   const right = pose === 'point' ? { sx: -1.25, sz: -0.25, ex: -0.15 } : { ...arm, sz: -arm.sz };
 
   const leg = (side) => (
-    <group position={[side * 0.1, hipY, 0]} rotation={[sitting ? -Math.PI / 2 : 0, 0, 0]}>
+    <group
+      ref={(g) => (thighs.current[side > 0 ? 1 : 0] = g)}
+      position={[side * 0.1, hipY, 0]}
+      rotation={[sitting ? -Math.PI / 2 : 0, 0, 0]}
+    >
       <Limb radius={0.075} length={0.28} color={pants} y={-0.21} />
-      <group position={[0, -0.42, 0]} rotation={[sitting ? Math.PI / 2 : 0, 0, 0]}>
+      <group
+        ref={(g) => (knees.current[side > 0 ? 1 : 0] = g)}
+        position={[0, -0.42, 0]}
+        rotation={[sitting ? Math.PI / 2 : 0, 0, 0]}
+      >
         <Limb radius={0.068} length={0.28} color={pants} y={-0.21} />
         <mesh castShadow position={[0, -0.44, 0.05]}>
           <boxGeometry args={[0.13, 0.08, 0.26]} />
@@ -256,7 +299,19 @@ export default function Person({
   );
 
   return (
-    <group position={position} rotation={[0, rotation, 0]}>
+    <group
+      ref={root}
+      position={position}
+      rotation={[0, rotation, 0]}
+      onPointerOver={() => name && setHover(true)}
+      onPointerOut={() => name && setHover(false)}
+    >
+      {controlled && (
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 0]}>
+          <ringGeometry args={[0.42, 0.52, 40]} />
+          <meshBasicMaterial color={accent} toneMapped={false} />
+        </mesh>
+      )}
       <group ref={body}>
         {leg(-1)}
         {leg(1)}
@@ -305,10 +360,12 @@ export default function Person({
       {name && (
         <Html position={[0, headY + 0.5, 0]} center zIndexRange={[19, 0]} portal={labelLayer}>
           <button
+            ref={tag}
             type="button"
-            className="name-tag"
+            className={`name-tag${controlled ? ' is-controlled' : ''}`}
             style={{ '--tag': accent }}
-            onClick={() => station && select(station)}
+            onClick={onTagClick}
+            title={`Control ${name}`}
           >
             {name}
           </button>

@@ -2,7 +2,8 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
-import { REDUCED_MOTION, select } from '../store.js';
+import { REDUCED_MOTION, getState, select } from '../store.js';
+import { commandWalk } from '../team.js';
 import { labelLayer } from './labelLayer.js';
 import { signTexture } from './textures.js';
 import { ACCENT } from './Station.jsx';
@@ -353,7 +354,8 @@ function Farm() {
       onClick={(e) => {
         e.stopPropagation();
         if (e.delta > 6) return;
-        select('farm-ledger');
+        if (getState().controlled) commandWalk(e.point);
+        else select('farm-ledger');
       }}
     >
       {/* Farm grounds */}

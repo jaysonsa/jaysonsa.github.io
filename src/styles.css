@@ -192,6 +192,7 @@ button {
 }
 
 .name-tag {
+  transition: opacity 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -205,6 +206,20 @@ button {
   white-space: nowrap;
   cursor: pointer;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
+}
+
+.name-tag.is-hidden {
+  opacity: 0;
+  pointer-events: none !important;
+}
+
+.name-tag.is-controlled {
+  background: var(--tag, #f97316);
+  color: #fff;
+}
+
+.name-tag.is-controlled::before {
+  background: #fff;
 }
 
 .name-tag::before {
@@ -229,14 +244,18 @@ body.is-list #labels {
   background: rgba(17, 20, 27, 0.82);
   color: #fff;
   border-radius: 999px;
-  padding: 6px 13px;
-  font-size: 13px;
+  padding: 4px 11px;
+  font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   transition: background 0.15s ease, transform 0.15s ease;
   user-select: none;
+}
+
+.station-label.is-current {
+  display: none;
 }
 
 .station-label.is-active {
@@ -272,6 +291,75 @@ body.is-list #labels {
   .hint-touch {
     display: inline;
   }
+}
+
+/* Steering a teammate */
+body.is-controlling .scene {
+  cursor: crosshair;
+}
+
+.control-bar {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 32px);
+  padding: 8px 8px 8px 14px;
+  border-radius: 999px;
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.control-bar p {
+  margin: 0;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.control-bar p span {
+  color: var(--muted);
+}
+
+.control-bar .btn {
+  padding: 7px 12px;
+  font-size: 13px;
+}
+
+.control-bar .btn.ghost {
+  max-width: none;
+}
+
+.control-dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--tag);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--tag) 30%, transparent);
+}
+
+.control-help-touch {
+  display: none;
+}
+
+@media (hover: none) {
+  .control-help-desktop {
+    display: none;
+  }
+  .control-help-touch {
+    display: inline;
+  }
+}
+
+.control-link {
+  margin-left: 6px;
+  font-size: 13px;
 }
 
 /* Case-study panel */
@@ -765,8 +853,22 @@ body.is-list #labels {
     padding: 4px 9px;
   }
 
-  /* Names live in the panel on phones to keep the overview readable */
-  .name-tag {
+  .control-help-desktop {
+    display: none;
+  }
+
+  .control-bar {
+    flex-wrap: wrap;
+    justify-content: center;
+    border-radius: 18px;
+  }
+
+  .control-bar p {
+    width: 100%;
+    text-align: center;
+  }
+
+  .control-bar .control-dot {
     display: none;
   }
 }
