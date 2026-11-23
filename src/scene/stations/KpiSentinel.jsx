@@ -2,7 +2,7 @@ import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import Station from '../Station.jsx';
-import Bot from '../Bot.jsx';
+import Person from '../Person.jsx';
 import { Chair, Desk, Monitor, Screen } from '../parts.jsx';
 import { barsTexture, drawChart, notifTexture } from '../textures.js';
 
@@ -103,8 +103,17 @@ export default function KpiSentinel() {
           </mesh>
         </group>
       </Desk>
-      <Chair position={[0, 0, 0.05]} color="#3f3f46" />
-      <Bot color="#f97316" position={[-2.5, 0, 0.5]} rotation={0.4} phase={1.3} />
+      <Chair position={[0, 0, 0.05]} color="#ef5b4c" />
+      <Person
+        name="Olly"
+        station="anomaly-alerts"
+        accent="#ef5b4c"
+        pose="sit"
+        position={[0, 0, 0.12]}
+        rotation={Math.PI}
+        phase={1.3}
+        look={{ skin: '#e0ac69', hair: 'short', hairColor: '#4a2c17', shirt: '#ef5b4c', pants: '#1e293b', accessory: 'headphones' }}
+      />
     </Station>
   );
 }

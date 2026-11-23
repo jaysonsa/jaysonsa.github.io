@@ -2,8 +2,8 @@ import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import Station from '../Station.jsx';
-import Bot from '../Bot.jsx';
-import { Desk, Monitor } from '../parts.jsx';
+import Person from '../Person.jsx';
+import { Chair, Desk, Monitor } from '../parts.jsx';
 import { bannerTexture, radarTexture, signTexture, supportTexture } from '../textures.js';
 
 const OURS = [
@@ -154,8 +154,24 @@ export default function PromoRadar() {
         <Monitor texture={support} w={1.0} h={0.62} position={[0, 0, -0.1]} />
       </Desk>
       <pointLight ref={csGlow} position={[3, 2, 5.4]} distance={4} color="#f97316" intensity={0.4} />
-      <Bot color="#a78bfa" position={[1.4, 0, 0.8]} rotation={-0.3} phase={2.1} />
-      <Bot color="#fb7185" position={[3, 0, 6]} rotation={Math.PI} phase={0.9} />
+      <Person
+        name="Lexi"
+        station="promo-radar"
+        accent="#f6c445"
+        pose="point"
+        position={[1.5, 0, 0.6]}
+        rotation={-2.2}
+        phase={2.1}
+        look={{ skin: '#f1c27d', hair: 'long', hairColor: '#2b1a10', shirt: '#f6c445', pants: '#1f2937', shoes: '#111827' }}
+      />
+      <Chair position={[3, 0, 5.85]} color="#ec6fa8" />
+      <Person
+        pose="sit"
+        position={[3, 0, 5.92]}
+        rotation={Math.PI}
+        phase={0.9}
+        look={{ skin: '#e8b98a', hair: 'bob', hairColor: '#5a3a22', shirt: '#ec6fa8', pants: '#334155', accessory: 'headset' }}
+      />
     </Station>
   );
 }

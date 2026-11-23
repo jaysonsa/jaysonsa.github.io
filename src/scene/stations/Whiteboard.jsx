@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import Station from '../Station.jsx';
-import Bot from '../Bot.jsx';
 import { whiteboardTexture } from '../textures.js';
 import { entries } from '../../content.js';
 
@@ -27,7 +26,6 @@ export default function Whiteboard() {
           <meshStandardMaterial color={c} />
         </mesh>
       ))}
-      <Bot color="#facc15" position={[2.7, 0, 1.1]} rotation={-0.6} phase={1.7} />
     </Station>
   );
 }

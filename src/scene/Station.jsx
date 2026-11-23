@@ -3,11 +3,10 @@ import { Html } from '@react-three/drei';
 import { select, useStore } from '../store.js';
 import { entries } from '../content.js';
 import { STATIONS } from '../stations.js';
+import { labelLayer } from './labelLayer.js';
 
 export const ACCENT = '#f97316';
 
-// Labels render into a fixed layer from index.html, so their DOM target never changes.
-const labelLayer = { current: document.getElementById('labels') };
 
 // Clickable wrapper: hover ring, floating label, and opening the case-study panel.
 export default function Station({ id, rotation, labelY = 3.4, ring = { position: [0, 0, 0], radius: 2.2 }, children }) {

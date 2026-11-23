@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import Station, { ACCENT } from '../Station.jsx';
-import Bot from '../Bot.jsx';
+import Person from '../Person.jsx';
 import { Chair, Desk, Monitor } from '../parts.jsx';
 import { bannerTexture, thumbsTexture } from '../textures.js';
 
@@ -76,8 +76,17 @@ export default function AssetHub() {
       <Desk w={2.2} d={0.9} position={[0.4, 0, -0.9]}>
         <Monitor texture={thumbs} w={1.15} h={0.7} position={[0, 0, -0.1]} />
       </Desk>
-      <Chair position={[0.4, 0, 0.05]} />
-      <Bot color="#22d3ee" position={[2.3, 0, 0.6]} rotation={-0.5} phase={0.4} />
+      <Chair position={[0.4, 0, 0.05]} color="#5b8def" />
+      <Person
+        name="Kulet"
+        station="asset-hub"
+        accent="#5b8def"
+        pose="sit"
+        position={[0.4, 0, 0.12]}
+        rotation={Math.PI}
+        phase={0.4}
+        look={{ skin: '#c68642', hair: 'spiky', hairColor: '#111111', shirt: '#5b8def', pants: '#334155', shoes: '#f97316' }}
+      />
     </Station>
   );
 }

@@ -151,6 +151,12 @@ export default function Panel() {
           <p className="eyebrow">{e.kind}</p>
           <h2 id="panel-title">{e.title}</h2>
           <p className="tagline">{e.tagline}</p>
+          {e.teammate && (
+            <p className="teammate">
+              <span aria-hidden="true" />
+              Virtual teammate: <strong>{e.teammate}</strong>
+            </p>
+          )}
         </div>
         <button ref={closeRef} type="button" className="icon-btn" onClick={() => select(null)} aria-label="Close">
           ✕

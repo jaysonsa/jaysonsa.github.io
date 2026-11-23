@@ -1,6 +1,8 @@
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import Room from './Room.jsx';
+import Interior from './Interior.jsx';
+import Outdoor from './Outdoor.jsx';
 import CameraRig from './CameraRig.jsx';
 import AboutDesk from './stations/AboutDesk.jsx';
 import AssetHub from './stations/AssetHub.jsx';
@@ -11,7 +13,7 @@ import FarmLedger from './stations/FarmLedger.jsx';
 import Whiteboard from './stations/Whiteboard.jsx';
 import Door from './stations/Door.jsx';
 
-const BG = '#151922';
+const SKY = '#bfe3fb';
 
 export default function Scene({ paused }) {
   return (
@@ -20,22 +22,27 @@ export default function Scene({ paused }) {
       shadows
       dpr={[1, 2]}
       frameloop={paused ? 'never' : 'always'}
-      camera={{ position: [15, 13, 17], fov: 40, near: 0.1, far: 200 }}
+      camera={{ position: [17, 16, 21], fov: 40, near: 0.1, far: 600 }}
     >
-      <color attach="background" args={[BG]} />
-      <fog attach="fog" args={[BG, 38, 75]} />
-      <hemisphereLight args={['#fff4e6', '#3a3f4b', 1.1]} />
+      <color attach="background" args={[SKY]} />
+      <fog attach="fog" args={[SKY, 90, 300]} />
+      <hemisphereLight args={['#eaf6ff', '#8aa86b', 1.15]} />
       <directionalLight
         castShadow
-        position={[8, 16, 8]}
-        intensity={1.8}
+        position={[6, 26, 14]}
+        intensity={2.1}
+        color="#fff3dc"
         shadow-mapSize={[2048, 2048]}
-        shadow-camera-left={-16}
-        shadow-camera-right={16}
-        shadow-camera-top={16}
-        shadow-camera-bottom={-16}
-        shadow-bias={-0.0005}
+        shadow-camera-left={-40}
+        shadow-camera-right={20}
+        shadow-camera-top={22}
+        shadow-camera-bottom={-22}
+        shadow-camera-far={80}
+        shadow-bias={-0.0006}
       />
+
+      <Outdoor />
+      <Interior />
 
       <Room />
       <AssetHub />
@@ -52,7 +59,7 @@ export default function Scene({ paused }) {
         enablePan={false}
         enableDamping
         minDistance={4}
-        maxDistance={60}
+        maxDistance={95}
         minPolarAngle={0.3}
         maxPolarAngle={1.35}
       />

@@ -186,8 +186,38 @@ button {
   overflow: hidden;
 }
 
-#labels .station-label {
+#labels .station-label,
+#labels .name-tag {
   pointer-events: auto;
+}
+
+.name-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  background: #ffffff;
+  color: #111827;
+  border-radius: 999px;
+  padding: 3px 9px 3px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
+}
+
+.name-tag::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--tag, #f97316);
+}
+
+.farm-label {
+  background: #6b3f1d;
+  border-color: #fde68a;
 }
 
 body.is-list #labels {
@@ -295,6 +325,26 @@ body.is-list #labels {
 .tagline {
   margin: 0;
   color: var(--muted);
+}
+
+.teammate {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.teammate span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.teammate strong {
+  color: var(--fg);
 }
 
 .icon-btn {
@@ -713,6 +763,11 @@ body.is-list #labels {
   .station-label {
     font-size: 11px;
     padding: 4px 9px;
+  }
+
+  /* Names live in the panel on phones to keep the overview readable */
+  .name-tag {
+    display: none;
   }
 }
 

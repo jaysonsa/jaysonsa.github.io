@@ -26,6 +26,7 @@ export const entries = {
 
   'asset-hub': {
     type: 'project',
+    teammate: 'Kulet',
     kind: WORK_NOTE,
     title: 'Asset Hub',
     tagline: 'A central banner and media library that other websites pull from, with no backend work on their side.',
@@ -49,6 +50,7 @@ export const entries = {
 
   'anomaly-alerts': {
     type: 'project',
+    teammate: 'Olly',
     kind: WORK_NOTE,
     title: 'Anomaly Alerts',
     tagline: 'Self-service alert rules: write a query, set conditions and a schedule, get anomalies in Telegram.',
@@ -72,6 +74,7 @@ export const entries = {
 
   'customer-insights': {
     type: 'project',
+    teammate: 'Baet',
     kind: WORK_NOTE,
     title: 'Customer Insights',
     tagline: 'A directory of millions of customer accounts with financial KPIs, plus scheduled performance reports.',
@@ -111,6 +114,7 @@ export const entries = {
 
   'promo-radar': {
     type: 'project',
+    teammate: 'Lexi',
     kind: WORK_NOTE,
     title: 'Promo Radar',
     tagline: 'Tracks every promotion on our brands and competitor brands, and feeds the changes to other teams through an API and signed webhooks.',
@@ -151,6 +155,7 @@ export const entries = {
 
   'farm-ledger': {
     type: 'project',
+    teammate: 'BeeOne',
     kind: 'Personal project · private app',
     title: 'Farm Ledger',
     tagline: 'Expense, cull, and wingband tracker for a small gamefowl farm, shared by two partners.',
