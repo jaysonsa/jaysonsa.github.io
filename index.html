@@ -3,20 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Portfolio</title>
-  <style>
-    :root { color-scheme: light dark; --bg: #0b0d12; --fg: #e8eaf0; --muted: #9aa3b2; --accent: #f97316; }
-    @media (prefers-color-scheme: light) { :root { --bg: #f4f5f7; --fg: #0f172a; --muted: #475569; } }
-    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 0 16px; background: var(--bg); color: var(--fg); font: 16px/1.6 system-ui, sans-serif; text-align: center; }
-    h1 { margin: 0 0 8px; font-size: clamp(1.8rem, 5vw, 2.6rem); }
-    p { margin: 0; color: var(--muted); }
-    span { color: var(--accent); }
-  </style>
+  <title>Virtual Office · jaysonsa</title>
+  <meta name="description" content="Portfolio of a web developer, presented as an interactive 3D virtual office. Each station is a project.">
+  <meta property="og:title" content="Virtual Office · jaysonsa">
+  <meta property="og:description" content="An interactive 3D office where each station is a project.">
+  <meta name="theme-color" content="#11141b">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f97316'/%3E%3Cpath d='M14 40 32 18l18 22H14z' fill='%23fff'/%3E%3Crect x='26' y='34' width='12' height='14' fill='%23fff'/%3E%3C/svg%3E">
 </head>
 <body>
-  <main>
-    <h1>Virtual office <span>under construction</span></h1>
-    <p>A 3D portfolio is on the way.</p>
-  </main>
+  <div id="root"></div>
+  <div id="labels"></div>
+  <noscript>
+    <main style="max-width:640px;margin:40px auto;padding:0 16px;font:16px/1.6 system-ui,sans-serif">
+      <h1>Virtual Office</h1>
+      <p>This portfolio is an interactive 3D office and needs JavaScript. Projects: Asset Hub, KPI Sentinel, Promo Radar, Farm Ledger.</p>
+      <p><a href="https://github.com/jaysonsa">github.com/jaysonsa</a></p>
+    </main>
+  </noscript>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
