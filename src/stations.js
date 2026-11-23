@@ -10,6 +10,6 @@ export const STATIONS = {
 };
 
 export const HOME = {
-  wide: { target: [-0.5, 0.3, -1.8], camera: [13.5, 12, 15] },
+  wide: { target: [0.6, 0.3, -1.6], camera: [15.2, 13, 16.8] },
   tall: { target: [-0.5, 0, -0.5], camera: [27, 30, 34] },
 };
