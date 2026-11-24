@@ -357,9 +357,15 @@ body.is-controlling .scene {
   }
 }
 
+.teammate {
+  flex-wrap: wrap;
+}
+
 .control-link {
-  margin-left: 6px;
+  width: 100%;
+  margin: 2px 0 0 14px;
   font-size: 13px;
+  text-align: left;
 }
 
 /* Case-study panel */

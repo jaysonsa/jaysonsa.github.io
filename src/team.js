@@ -85,7 +85,7 @@ const CORNERS = [
   [12.9, -9.9],
   [-12.9, -9.9],
 ];
-const BOUNDS = { x0: -45, x1: 35, z0: -35, z1: 30 };
+const BOUNDS = { x0: -66, x1: 35, z0: -35, z1: 30 };
 
 function cross(o, a, b) {
   return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
