@@ -21,12 +21,14 @@ export default function App() {
   const listView = useStore((s) => s.listView) || !webgl;
   const selected = useStore((s) => s.selected);
   const controlled = useStore((s) => s.controlled);
+  const spot = useStore((s) => s.spot);
 
   useEffect(() => {
     const onKey = (e) => {
       const { selected: current } = getState();
       if (e.key === 'Escape') {
         if (getState().controlled) setState({ controlled: null });
+        else if (getState().spot) setState({ spot: null });
         else select(null);
       }
       if (!current || e.target.closest?.('input, textarea')) return;
@@ -84,7 +86,19 @@ export default function App() {
 
       {!listView && controlled && <ControlBar />}
 
-      {!listView && !selected && !controlled && (
+      {!listView && spot && !controlled && !selected && (
+        <div className="control-bar spot-bar">
+          <p>
+            <strong>Chick Ranges</strong>
+            <span> · JER Gamefarm brooding pens</span>
+          </p>
+          <button type="button" className="btn primary" onClick={() => setState({ spot: null })}>
+            Back to office
+          </button>
+        </div>
+      )}
+
+      {!listView && !selected && !controlled && !spot && (
         <p className="hint">
           <span className="hint-desktop">Click a station to open it · click a person to steer them · drag to look around</span>
           <span className="hint-touch">Tap a station to open it · tap a person to steer them</span>

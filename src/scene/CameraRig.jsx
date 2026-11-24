@@ -2,13 +2,14 @@ import { useEffect, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { REDUCED_MOTION, useStore } from '../store.js';
-import { HOME, STATIONS } from '../stations.js';
+import { HOME, SPOTS, STATIONS } from '../stations.js';
 
 const UP = new THREE.Vector3(0, 1, 0);
 
 // Glides the camera to the selected station, or back to the overview.
 export default function CameraRig() {
   const selected = useStore((s) => s.selected);
+  const spot = useStore((s) => s.spot);
   const controls = useThree((s) => s.controls);
   const camera = useThree((s) => s.camera);
   const size = useThree((s) => s.size);
@@ -20,7 +21,14 @@ export default function CameraRig() {
   const wide = size.width >= 900;
 
   useEffect(() => {
-    const focus = selected ? STATIONS[selected].focus : tall ? HOME.tall : HOME.wide;
+    // Optional ?view=cx,cy,cz,tx,ty,tz override for the overview (handy for sharing a specific angle).
+    const custom = new URLSearchParams(window.location.search).get('view')?.split(',').map(Number);
+    const home = custom?.length === 6 && custom.every(Number.isFinite)
+      ? { camera: custom.slice(0, 3), target: custom.slice(3) }
+      : tall
+        ? HOME.tall
+        : HOME.wide;
+    const focus = selected ? STATIONS[selected].focus : spot ? SPOTS[spot] : home;
     const target = new THREE.Vector3(...focus.target);
     const pos = new THREE.Vector3(...focus.camera);
 
@@ -60,7 +68,7 @@ export default function CameraRig() {
       controls.update();
       animating.current = false;
     }
-  }, [selected, tall, wide, controls, camera]);
+  }, [selected, spot, tall, wide, controls, camera]);
 
   useEffect(() => {
     if (!controls) return undefined;

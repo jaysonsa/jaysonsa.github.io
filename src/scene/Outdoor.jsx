@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { REDUCED_MOTION } from '../store.js';
 import Farm from './Farm.jsx';
+import ChickRange from './ChickRange.jsx';
 
 function rng(seed) {
   let s = seed >>> 0;
@@ -44,6 +45,7 @@ function inRect([x, z], [x0, x1, z0, z1]) {
 const KEEP_OUT = [
   [-14, 14, -11, 11],
   [-66, -13, -28, 28],
+  [-3, 28, -30, -11], // chick ranges among the trees, behind the office
   [-14, 40, 9, 60],
   [12, 60, -4, 60],
 ];
@@ -237,6 +239,9 @@ export default function Outdoor() {
 
       <Trees />
       <Farm />
+      <ChickRange position={[2.5, 0, -24]} number={1} seed={1} label />
+      <ChickRange position={[13, 0, -24]} number={2} seed={2} />
+      <ChickRange position={[23.5, 0, -24]} number={3} seed={3} />
       <Clouds />
     </group>
   );

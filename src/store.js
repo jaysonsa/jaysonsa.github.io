@@ -4,7 +4,7 @@ import { entries } from './content.js';
 // Tiny shared store. It works inside and outside the R3F canvas without context bridging.
 // A station can be opened directly with a link such as /#anomaly-alerts.
 const initial = typeof window !== 'undefined' ? decodeURIComponent(window.location.hash.slice(1)) : '';
-let state = { selected: entries[initial] ? initial : null, listView: false, controlled: null, marker: null };
+let state = { selected: entries[initial] ? initial : null, listView: false, controlled: null, marker: null, spot: null };
 const listeners = new Set();
 
 export function getState() {
@@ -28,7 +28,7 @@ export function useStore(selector) {
 
 export function select(id) {
   if (id && !entries[id]) id = null;
-  setState({ selected: id });
+  setState({ selected: id, spot: null });
   const url = id ? `#${id}` : window.location.pathname + window.location.search;
   window.history.replaceState(null, '', url);
 }

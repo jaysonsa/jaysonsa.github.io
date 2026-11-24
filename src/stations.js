@@ -10,6 +10,11 @@ export const STATIONS = {
   contact: { position: [10.5, 0, -9], focus: { target: [10.5, 1.7, -8.6], camera: [9.6, 3.2, -2.4] } },
 };
 
+// Extra camera viewpoints that are not case studies.
+export const SPOTS = {
+  chicks: { label: 'Chick Ranges', target: [13, 0.5, -24], camera: [17, 10, -9] },
+};
+
 export const HOME = {
   wide: { target: [-3.5, 0.3, -0.6], camera: [18, 18, 22.5] },
   tall: { target: [0.5, 0, 0.5], camera: [28, 31, 35] },
