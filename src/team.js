@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { getState, setState } from './store.js';
+import { findPath } from './nav.js';
+import { WORLD_BOUNDS } from './world.js';
 
 // The virtual teammates. Home positions are in world coordinates (their desk or post).
 export const TEAM = [
@@ -67,80 +69,19 @@ export function setControlled(id) {
   setState({ controlled: id });
 }
 
-// Only the back wall and the left (glass) wall are solid; the front and right sides are open.
-const WALLS = [
-  [
-    [-12.25, -9.1],
-    [12.25, -9.1],
-  ],
-  [
-    [-12.1, -9.25],
-    [-12.1, 9.25],
-  ],
-];
-const CORNERS = [
-  [-11.6, 9.75], // just inside the open front edge, beside the glass wall
-  [-12.9, 9.9],
-  [12.9, 9.9],
-  [12.9, -9.9],
-  [-12.9, -9.9],
-];
-const BOUNDS = { x0: -66, x1: 35, z0: -35, z1: 30 };
+const BOUNDS = WORLD_BOUNDS;
 
-function cross(o, a, b) {
-  return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
-}
-
-function segmentsCross(p1, p2, q1, q2) {
-  const d1 = cross(q1, q2, p1);
-  const d2 = cross(q1, q2, p2);
-  const d3 = cross(p1, p2, q1);
-  const d4 = cross(p1, p2, q2);
-  return d1 * d2 < 0 && d3 * d4 < 0;
-}
-
-function blocked(a, b) {
-  return WALLS.some(([w1, w2]) => segmentsCross(a, b, w1, w2));
-}
-
-// Shortest route around the walls using the building corners as waypoints.
-function plan(from, to) {
-  const nodes = [from, ...CORNERS, to];
-  const n = nodes.length;
-  const dist = Array(n).fill(Infinity);
-  const prev = Array(n).fill(-1);
-  const done = Array(n).fill(false);
-  dist[0] = 0;
-  for (let k = 0; k < n; k++) {
-    let u = -1;
-    for (let i = 0; i < n; i++) if (!done[i] && (u < 0 || dist[i] < dist[u])) u = i;
-    if (u < 0 || dist[u] === Infinity) break;
-    done[u] = true;
-    for (let v = 0; v < n; v++) {
-      if (done[v] || blocked(nodes[u], nodes[v])) continue;
-      const d = dist[u] + Math.hypot(nodes[u][0] - nodes[v][0], nodes[u][1] - nodes[v][1]);
-      if (d < dist[v]) {
-        dist[v] = d;
-        prev[v] = u;
-      }
-    }
-  }
-  if (dist[n - 1] === Infinity) return [to];
-  const path = [];
-  for (let v = n - 1; v > 0; v = prev[v]) path.unshift(nodes[v]);
-  return path;
-}
-
-export function walkTo(id, point) {
+export function walkTo(id, point, { exact = false } = {}) {
   const r = runtime[id];
   if (!r) return;
   const to = [
     THREE.MathUtils.clamp(point.x, BOUNDS.x0, BOUNDS.x1),
     THREE.MathUtils.clamp(point.z, BOUNDS.z0, BOUNDS.z1),
   ];
-  r.path = plan([r.pos.x, r.pos.z], to).map(([x, z]) => new THREE.Vector3(x, 0, z));
+  r.path = findPath([r.pos.x, r.pos.z], to, { exact }).map(([x, z]) => new THREE.Vector3(x, 0, z));
   r.goingHome = false;
-  setState({ marker: { x: to[0], z: to[1], t: Date.now() } });
+  const end = r.path[r.path.length - 1];
+  if (!exact && end) setState({ marker: { x: end.x, z: end.z, t: Date.now() } });
 }
 
 export function commandWalk(point) {
@@ -151,7 +92,7 @@ export function commandWalk(point) {
 export function sendHome(id) {
   const m = TEAM_BY_ID[id];
   if (!m) return;
-  walkTo(id, new THREE.Vector3(...m.home));
+  walkTo(id, new THREE.Vector3(...m.home), { exact: true });
   runtime[id].goingHome = true;
 }
 

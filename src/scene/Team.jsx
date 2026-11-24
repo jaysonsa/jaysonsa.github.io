@@ -4,9 +4,14 @@ import * as THREE from 'three';
 import Person from './Person.jsx';
 import { getState, useStore } from '../store.js';
 import { commandWalk, isHome, runtime, setControlled, TEAM } from '../team.js';
+import { isWalkable } from '../nav.js';
+import { steerVector } from '../input.js';
 
 const SPEED = 3.4; // world units per second
 const tmp = new THREE.Vector3();
+const fwd = new THREE.Vector3();
+const right = new THREE.Vector3();
+const UP = new THREE.Vector3(0, 1, 0);
 
 function lerpAngle(a, b, t) {
   let d = ((b - a + Math.PI) % (Math.PI * 2)) - Math.PI;
@@ -20,12 +25,28 @@ function Walker({ m, phase }) {
   const [moving, setMoving] = useState(false);
   const [atHome, setAtHome] = useState(true);
 
-  useFrame((_, delta) => {
+  useFrame(({ camera }, delta) => {
     const r = runtime[m.id];
     const g = group.current;
     if (!g) return;
     const dt = Math.min(delta, 0.05);
-    if (r.path.length) {
+    const steer = getState().controlled === m.id ? steerVector() : null;
+    if (steer?.active) {
+      // Direct WASD steering relative to the camera, sliding along obstacles.
+      r.path = [];
+      camera.getWorldDirection(fwd).setY(0).normalize();
+      right.crossVectors(fwd, UP).normalize();
+      tmp.copy(fwd).multiplyScalar(steer.y).addScaledVector(right, steer.x).normalize();
+      const nx = r.pos.x + tmp.x * SPEED * dt;
+      const nz = r.pos.z + tmp.z * SPEED * dt;
+      const free = !isWalkable(r.pos.x, r.pos.z); // already inside a seat area: let them step out
+      if (free || isWalkable(nx, nz)) r.pos.set(nx, 0, nz);
+      else if (isWalkable(nx, r.pos.z)) r.pos.x = nx;
+      else if (isWalkable(r.pos.x, nz)) r.pos.z = nz;
+      r.heading = lerpAngle(r.heading, Math.atan2(tmp.x, tmp.z), 1 - Math.exp(-dt * 12));
+      if (!moving) setMoving(true);
+      if (atHome) setAtHome(false);
+    } else if (r.path.length) {
       const target = r.path[0];
       tmp.subVectors(target, r.pos).setY(0);
       const dist = tmp.length();

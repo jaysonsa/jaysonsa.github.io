@@ -4,14 +4,7 @@ import * as THREE from 'three';
 import { REDUCED_MOTION } from '../store.js';
 import Farm from './Farm.jsx';
 import ChickRange from './ChickRange.jsx';
-
-function rng(seed) {
-  let s = seed >>> 0;
-  return () => {
-    s = (s * 1664525 + 1013904223) >>> 0;
-    return s / 4294967296;
-  };
-}
+import { RANGES, rng, treePositions } from '../world.js';
 
 // Instanced mesh from a list of [x, y, z, scale, rotY] transforms (scale may be [sx, sy, sz]).
 export function Scatter({ items, children, castShadow = false, colors, material = null }) {
@@ -37,36 +30,8 @@ export function Scatter({ items, children, castShadow = false, colors, material 
   );
 }
 
-function inRect([x, z], [x0, x1, z0, z1]) {
-  return x > x0 && x < x1 && z > z0 && z < z1;
-}
-
-// Areas where trees must not grow: the building, the farm, and the camera's line of sight.
-const KEEP_OUT = [
-  [-14, 14, -11, 11],
-  [-66, -13, -28, 28],
-  [-3, 28, -30, -11], // chick ranges among the trees, behind the office
-  [-14, 40, 9, 60],
-  [12, 60, -4, 60],
-];
-
-function useTrees() {
-  return useMemo(() => {
-    const r = rng(42);
-    const out = [];
-    let guard = 0;
-    while (out.length < 90 && guard++ < 4000) {
-      const x = -60 + r() * 110;
-      const z = -45 + r() * 75;
-      if (KEEP_OUT.some((k) => inRect([x, z], k))) continue;
-      out.push([x, z, 0.8 + r() * 0.7, r() * Math.PI * 2]);
-    }
-    return out;
-  }, []);
-}
-
 function Trees() {
-  const trees = useTrees();
+  const trees = treePositions();
   const trunks = useMemo(() => trees.map(([x, z, s, r]) => [x, 0.9 * s, z, s, r]), [trees]);
   const crowns = useMemo(() => trees.map(([x, z, s, r]) => [x, 2.5 * s, z, s, r]), [trees]);
   const crowns2 = useMemo(() => trees.map(([x, z, s, r]) => [x + 0.5 * s, 2.1 * s, z + 0.3 * s, s * 0.75, r]), [trees]);
@@ -232,16 +197,12 @@ export default function Outdoor() {
         </mesh>
       ))}
 
-      <mesh position={[70, 80, -170]}>
-        <sphereGeometry args={[8, 20, 16]} />
-        <meshBasicMaterial color="#fff6c8" toneMapped={false} />
-      </mesh>
 
       <Trees />
       <Farm />
-      <ChickRange position={[2.5, 0, -24]} number={1} seed={1} label />
-      <ChickRange position={[13, 0, -24]} number={2} seed={2} />
-      <ChickRange position={[23.5, 0, -24]} number={3} seed={3} />
+      {RANGES.map((r) => (
+        <ChickRange key={r.number} {...r} />
+      ))}
       <Clouds />
     </group>
   );

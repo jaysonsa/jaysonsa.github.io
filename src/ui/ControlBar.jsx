@@ -12,7 +12,7 @@ export default function ControlBar() {
       <span className="control-dot" aria-hidden="true" />
       <p>
         <strong>{m.name}</strong>
-        <span className="control-help-desktop"> · click anywhere to walk there</span>
+        <span className="control-help-desktop"> · click to walk there, or use W A S D</span>
         <span className="control-help-touch"> · tap where to go</span>
       </p>
       <button type="button" className="btn ghost" onClick={() => sendHome(m.id)}>

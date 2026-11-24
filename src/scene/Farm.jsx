@@ -6,6 +6,7 @@ import { commandWalk } from '../team.js';
 import { labelLayer } from './labelLayer.js';
 import { makeCanvasTexture, signTexture } from './textures.js';
 import { Chicken, Palm, Scatter } from './Outdoor.jsx';
+import { FARM, FARM_PALMS, rng, teepeePositions } from '../world.js';
 
 // JER Gamefarm: long straight rows of striped, numbered teepees on a bright lawn,
 // each with a tethered rooster, receding toward the horizon.
@@ -14,22 +15,8 @@ const RED = '#b0123a';
 const YELLOW = '#f2c230';
 const BLUE = '#1d4fd8';
 
-const X_NEAR = -18; // column closest to the office
-const X_STEP = 1.6; // spacing along a row
-const COLS = 28;
-const Z0 = -24;
-const Z_STEP = 4.5; // wide lawn between rows, like the reference photo
-const ROWS = 11;
-const AISLE_Z = 9.75; // main dirt aisle from the gate
+const { COLS, Z_STEP, ROWS, AISLE_Z, X_GATE, X_FAR, Z_MIN, Z_MAX } = FARM;
 const DETAILED_COLS = 2; // nearest columns get individual numbered faces
-
-function rng(seed) {
-  let s = seed >>> 0;
-  return () => {
-    s = (s * 1664525 + 1013904223) >>> 0;
-    return s / 4294967296;
-  };
-}
 
 function stripes(ctx, w, h) {
   ctx.fillStyle = RED;
@@ -70,16 +57,12 @@ function grassTexture() {
 function useLayout() {
   return useMemo(() => {
     const r = rng(11);
-    const rowsZ = [];
-    for (let k = 0; k < ROWS; k++) rowsZ.push(Z0 + k * Z_STEP);
-    const teepees = [];
-    rowsZ.forEach((z, row) => {
-      for (let col = 0; col < COLS; col++) {
-        const x = X_NEAR - col * X_STEP;
-        teepees.push({ x, z, row, col, n: row * COLS + col + 1, jitter: (r() - 0.5) * 0.5, face: r() * Math.PI * 2 });
-      }
-    });
-    return teepees;
+    return teepeePositions().map((t) => ({
+      ...t,
+      n: t.row * COLS + t.col + 1,
+      jitter: (r() - 0.5) * 0.5,
+      face: r() * Math.PI * 2,
+    }));
   }, []);
 }
 
@@ -142,25 +125,25 @@ export default function Farm() {
     [plain],
   );
 
-  const xFar = X_NEAR - (COLS - 1) * X_STEP - 2;
-  const zMin = Z0 - 2;
-  const zMax = Z0 + (ROWS - 1) * Z_STEP + 2;
+  const xFar = X_FAR;
+  const zMin = Z_MIN;
+  const zMax = Z_MAX;
   const fencePosts = useMemo(() => {
     const out = [];
-    for (let x = X_NEAR + 2.5; x >= xFar; x -= 2) {
+    for (let x = X_GATE; x >= xFar; x -= 2) {
       out.push([x, 0.45, zMin, 1]);
       out.push([x, 0.45, zMax, 1]);
     }
     for (let z = zMin; z <= zMax; z += 2) {
       out.push([xFar, 0.45, z, 1]);
-      if (Math.abs(z - AISLE_Z) > 2) out.push([X_NEAR + 2.5, 0.45, z, 1]);
+      if (Math.abs(z - AISLE_Z) > 2) out.push([X_GATE, 0.45, z, 1]);
     }
     return out;
   }, [xFar, zMin, zMax]);
 
-  const fieldW = X_NEAR + 2.5 - xFar;
+  const fieldW = X_GATE - xFar;
   const fieldD = zMax - zMin;
-  const cx = (X_NEAR + 2.5 + xFar) / 2;
+  const cx = (X_GATE + xFar) / 2;
   const cz = (zMin + zMax) / 2;
 
   return (
@@ -237,7 +220,7 @@ export default function Farm() {
       </Scatter>
 
       {/* Gate facing the office */}
-      <group position={[X_NEAR + 2.5, 0, AISLE_Z]} rotation={[0, Math.PI / 2, 0]}>
+      <group position={[X_GATE, 0, AISLE_Z]} rotation={[0, Math.PI / 2, 0]}>
         {[-2.2, 2.2].map((x) => (
           <mesh key={x} castShadow position={[x, 1.8, 0]}>
             <boxGeometry args={[0.35, 3.6, 0.35]} />
@@ -258,11 +241,10 @@ export default function Farm() {
         </mesh>
       </group>
 
-      <Palm position={[X_NEAR + 3.6, 0, AISLE_Z - 2.4]} rotation={0.4} />
-      <Palm position={[X_NEAR + 3.6, 0, AISLE_Z + 2.6]} rotation={-0.6} height={5.6} />
-      <Palm position={[X_NEAR + 3.6, 0, -16]} rotation={2.4} height={4.6} />
-      <Palm position={[xFar - 2, 0, 0]} rotation={1} height={6} />
-      <Palm position={[xFar - 2, 0, 14]} rotation={-2} />
+
+      {FARM_PALMS.map((p, i) => (
+        <Palm key={i} {...p} />
+      ))}
 
       <Html position={[-34, 4, 0]} center zIndexRange={[20, 0]} portal={labelLayer}>
         <button

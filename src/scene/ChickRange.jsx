@@ -4,26 +4,17 @@ import * as THREE from 'three';
 import { REDUCED_MOTION } from '../store.js';
 import { makeCanvasTexture, signTexture } from './textures.js';
 import { Chicken } from './Outdoor.jsx';
+import { RANGE_SIZE, rng } from '../world.js';
 import { Html } from '@react-three/drei';
 import { setState } from '../store.js';
 import { labelLayer } from './labelLayer.js';
 
 // A netted free-range pen for chicks with a brooder house in the middle.
 
-const W = 9; // along x
-const D = 7; // along z
-const H = 2.2; // net height
+const { W, D, H } = RANGE_SIZE;
 const HOUSE = { w: 3.2, d: 2.4, h: 1.6 };
 const CHICKS = 36;
 const CHICK_COLORS = ['#fde047', '#facc15', '#fef08a', '#d6a35c', '#292524', '#fde047'];
-
-function rng(seed) {
-  let s = seed >>> 0;
-  return () => {
-    s = (s * 1664525 + 1013904223) >>> 0;
-    return s / 4294967296;
-  };
-}
 
 let netTex;
 function netTexture() {
